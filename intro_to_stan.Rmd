@@ -15,6 +15,9 @@ output:
     highlight: tango
     citation_package: natbib
     latex_engine: xelatex
+    fonttheme: "professionalfonts"
+    template: "pandoc/mydefault.latex"
+    slide_level: 3
     # includes:
       # in_header: preamble.tex
 ---
@@ -24,7 +27,7 @@ options(warn = -1)
 knitr::opts_knit$set(progress = TRUE, verbose = FALSE)
 ```
 
-# What is STAN [^1]
+### What is STAN [^1]
 [^1]: https://mc-stan.org
 
 * A _programming language_
@@ -38,7 +41,7 @@ knitr::opts_knit$set(progress = TRUE, verbose = FALSE)
    - describe how the data are generated conditioned on the parameters
    - inference the parameters based on the data
 
-# How STAN works?
+### How STAN works?
 
 * _Hamilton Monte Carlo (HMC)_ provides a general sampling procedure for Bayesian inference.
   - As long as we can get the __gradients__ for the parameters.
@@ -48,7 +51,7 @@ knitr::opts_knit$set(progress = TRUE, verbose = FALSE)
 * Furthermore, any bounded parameters will be transformed into a non-bounded
   parameter space.
 
-# Show me an example
+### Show me an example
 Let's consider a simple example. 
 
 * Suppose we have $N$ binary observations $y_{1},
@@ -57,7 +60,7 @@ distribution under the parameter $\theta$.
 
 * Our goal is to infer $\theta$.
 
-# Set up the STAN env in R.
+### Set up the STAN env in R.
 ```{r include = TRUE, warning = FALSE, message = FALSE}
 library(cmdstanr)
 # Note: the cmdstan home path is from my computer.
@@ -70,7 +73,7 @@ library(posterior)
 cmdstan_path()
 cmdstan_version()
 ```
-# STAN script
+### STAN script
 
 ```{r include = TRUE, warning = FALSE, message = FALSE, cache = TRUE}
 bern_mod <- cmdstan_model("bernoulli.stan",
@@ -80,7 +83,7 @@ bern_mod <- cmdstan_model("bernoulli.stan",
 bern_mod$print()
 ```
 
-# Let's feed it some data
+### Let's feed it some data
 
 ```{r include = TRUE}
 bern_data  <- list(N = 10, y = c(0,1,0,0,0,0,0,0,0,1))
@@ -92,14 +95,14 @@ bern_mcmc <- bern_mod$sample(data = bern_data,
                              show_message = FALSE)
 ```
 
-# Summary of the sampling in STAN
+### Summary of the sampling in STAN
 
 ```{r include=TRUE}
 ## use `posterior` package
 bern_mcmc$summary("theta", "mean", "sd" , "rhat",
                   "ess_bulk")
 ```
-# Posterior draws
+### Posterior draws
 
 ```{r include=TRUE}
 draws <- bern_mcmc$draws()
@@ -108,7 +111,7 @@ str(draws)
 ## into data.frame.
 ```
 
-# How about variational inference?
+### How about variational inference?
 
 ```{r include = TRUE}
 bern_vb <- bern_mod$variational(data = bern_data,
@@ -116,7 +119,7 @@ bern_vb <- bern_mod$variational(data = bern_data,
                                   output_samples = 4000)
 ```
 
-# How about MLE estimation?
+### How about MLE estimation?
 
 ```{r include = TRUE}
 bern_mle <- bern_mod$optimize(data = bern_data,
@@ -124,7 +127,7 @@ bern_mle <- bern_mod$optimize(data = bern_data,
 
 ```
 
-# Result Summary
+### Result Summary
 
 ```{r eval = FALSE}
 bayesplot_grid(
@@ -148,4 +151,4 @@ bayesplot_grid(
   xlim = c(0,1))
 ```
 
-# Discussions
+### Discussions
