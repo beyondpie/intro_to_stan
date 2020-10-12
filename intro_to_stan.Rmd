@@ -1,0 +1,151 @@
+---
+title: "Introduction to STAN: a probabilistic programming language"
+author: Songpeng Zu
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output:
+  # pdf_document:
+    # keep_tex: true
+  beamer_presentation:
+    keep_tex: true
+    # incremental: true
+    fig_width: 7
+    fig_height: 6
+    fig_caption: true
+    df_print: kable
+    highlight: tango
+    citation_package: natbib
+    latex_engine: xelatex
+    # includes:
+      # in_header: preamble.tex
+---
+
+```{r echo = FALSE}
+options(warn = -1)
+knitr::opts_knit$set(progress = TRUE, verbose = FALSE)
+```
+
+# What is STAN [^1]
+[^1]: https://mc-stan.org
+
+* A _programming language_
+   - the syntax much like C++
+   - furthermore it's written in C++
+   - it's needed to compile and run
+
+* Specifically designed for the __statistical modeling__
+   - express the data
+   - express the parameters and their priors
+   - describe how the data are generated conditioned on the parameters
+   - inference the parameters based on the data
+
+# How STAN works?
+
+* _Hamilton Monte Carlo (HMC)_ provides a general sampling procedure for Bayesian inference.
+  - As long as we can get the __gradients__ for the parameters.
+* _Viariational Inference (VI)_ and _Maximum likelihood Estimation (MLE)_
+  depend on both the __gradients__ and __optimizer__. 
+* STAN owns a mathematical library that can automatically get the gradients.
+* Furthermore, any bounded parameters will be transformed into a non-bounded
+  parameter space.
+
+# Show me an example
+Let's consider a simple example. 
+
+* Suppose we have $N$ binary observations $y_{1},
+y_{2}, \ldots, y_{N}$. They are the _i.i.d_ samples from a $Bernoulli$
+distribution under the parameter $\theta$. 
+
+* Our goal is to infer $\theta$.
+
+# Set up the STAN env in R.
+```{r include = TRUE, warning = FALSE, message = FALSE}
+library(cmdstanr)
+# Note: the cmdstan home path is from my computer.
+set_cmdstan_path(path = paste(Sys.getenv("HOME"),
+                 "softwares",
+                 "cmdstan-2.23.0", sep = "/"))
+library(bayesplot)
+library(posterior)
+
+cmdstan_path()
+cmdstan_version()
+```
+# STAN script
+
+```{r include = TRUE, warning = FALSE, message = FALSE, cache = TRUE}
+bern_mod <- cmdstan_model("bernoulli.stan",
+                          ## STAN need to be complied.
+                          compile = TRUE)
+## show the content in the stan script.
+bern_mod$print()
+```
+
+# Let's feed it some data
+
+```{r include = TRUE}
+bern_data  <- list(N = 10, y = c(0,1,0,0,0,0,0,0,0,1))
+## Run MCMC using the 'sample' method
+bern_mcmc <- bern_mod$sample(data = bern_data,
+                             seed = 355113,
+                             chains = 4,
+                             parallel_chains = 2,
+                             show_message = FALSE)
+```
+
+# Summary of the sampling in STAN
+
+```{r include=TRUE}
+## use `posterior` package
+bern_mcmc$summary("theta", "mean", "sd" , "rhat",
+                  "ess_bulk")
+```
+# Posterior draws
+
+```{r include=TRUE}
+draws <- bern_mcmc$draws()
+str(draws)
+## use posterior::as_draws_df to transorm the results
+## into data.frame.
+```
+
+# How about variational inference?
+
+```{r include = TRUE}
+bern_vb <- bern_mod$variational(data = bern_data,
+                                  seed = 355113,
+                                  output_samples = 4000)
+```
+
+# How about MLE estimation?
+
+```{r include = TRUE}
+bern_mle <- bern_mod$optimize(data = bern_data,
+                              seed = 355113)
+
+```
+
+# Result Summary
+
+```{r eval = FALSE}
+bayesplot_grid(
+  mcmc_hist(bern_mcmc$draws("theta"), bindwidth = 0.05) +
+  vline_at(bern_mle$mle(), size = 1.2),
+  mcmc_hist(bern_vb$draws("theta"), bindwidth = 0.05,
+            bins = 30),
+  titles = c("MCMC", "VI"),
+  xlim = c(0,1))
+```
+
+---
+```{r, echo = FALSE}
+```{r echo = FALSE}
+bayesplot_grid(
+  mcmc_hist(bern_mcmc$draws("theta"), bindwidth = 0.05) +
+  vline_at(bern_mle$mle(), size = 1.2),
+  mcmc_hist(bern_vb$draws("theta"), bindwidth = 0.05,
+            bins = 30),
+  titles = c("MCMC", "VI"),
+  xlim = c(0,1))
+```
+
+# Discussions
