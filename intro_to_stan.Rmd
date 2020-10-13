@@ -32,34 +32,124 @@ output:
 knitr::opts_chunk$set(collapse = TRUE, comment = "")
 ```
 
-### What is STAN [^1]
-[^1]: https://mc-stan.org
+### Content[^1]
+[^1]: https://github.com/beyondpie/intro_to_stan
+
+An introduction to STAN, a well-designed and easily used tool, for statistical
+modeling. 
+
+* What is STAN.
+
+* How STAN works.
+
+* How to write a STAN script.
+
+* How to run it and analyze the result.
+
+# The big picture
+
+### What is STAN [^2]
+[^2]: https://mc-stan.org
 
 * A _programming language_
-   + the syntax much like C++
-   + it's written in C++
-   + it's needed to compile and run
+   + It supports array data structure, while loops, and conditionals. 
+   + The syntax much like C++. But no need to worry about C++.
+   + STAN itself is written in C++.
+   + A model written in STAN needs to be compiled.
 
 * Specifically designed for the _statistical modeling_
-   + Vector, matrix, array and their operations
+   + Vector, matrix and their operations
    + A series of probabilistic functions
    + A series of blocks to describe a statistical model.
    + Support sampling, maximum likelihood estimation and variational inference. 
+   
+### STAN script
+```{stan, output.var = "nouse", eval = FALSE}
+// A typical stan script is composed by several modules/blocks.
+functions {}
+data {
+  int N;
+  real y[N];
+  real<lower=0> sigma_y
+}
+transformed data {}
+parameters {real mu;}
+transformed parameters {}
+model {
+  mu ~ normal(0.0, 1.0);
+  for (n in 1:N) { y[n] ~ normal(mu, sigma_y);}
+}
+generated quantities {
+  // unused in the model
+  // generate replicated data or monitor convergence
+  real square_mu;
+  square_mu = mu * mu; }
+```
 
-### How STAN works?
+# Behind STAN
 
-* _Hamilton Monte Carlo (HMC)_ provides a general sampling procedure for Bayesian inference
+### MCMC Sampling in STAN
 
-  > _Gradient_ of the log probabilistic density function over the random variables are needed.
+* _Hamiltonian Monte Carlo (HMC)_ provides a general sampling procedure for
+  Bayesian inference: using the derivatives of the density function.
   
-<!-- * _Viariational Inference (VI)_ and _Maximum likelihood Estimation (MLE)_ -->
-  <!-- depend on both the __gradients__ and __optimizer__.  -->
-  
-* STAN owns a mathematical library [See @carpenter2015stan] that can automatically get the gradients.
+* HMC and its adaptive variant the no-U-turn sampler (NUTS) [@hoffman2014no] are
+used in STAN. NUTS is the default one.
 
-* Furthermore, any bounded parameters will be transformed into a non-bounded
-  parameter space.
+* You DON'T need to write the derivatives in STAN.
+
+### HMC in STAN
+
+* Sampling goal: $p(\theta | y)$, the posterior distribution given data $y$.
   
+* HMC introduces auxiliary momentum variables $\rho$. $p(\rho, \theta) = p(\rho
+  | \theta) p(\theta)$. In STAN, $p(\rho|\theta) \sim \mathcal{N}(0, M)$, is independent of $\theta$
+
+* Parameters in HMC [See Chapter 15 in STAN Reference Manual]
+  + The discretization time $\epsilon$ [^3] will be automatically optimized during
+    warmup to match an acceptance rate parameter $\delta$ (default is 0.8).
+    Increasing _$\delta$_ will force the
+    sampler to use small step sizes, and increase the effective sample size per
+    iteration.
+  + The $M^{-1}$ (default a diagonal matrix) is estimated during warmup[^4].
+  + Number of steps taken $L$ is dynamically adapted during sampling (and during
+    warmup) in NUTS, which is controlled by a predefined parameter _treedepth_.
+
+<!-- * _treedepth_ is an important diagnostic tool for NUTS. -->
+
+<!-- * Hamiltonian trajectory is recorded as another diagnostic way to access which -->
+  <!-- iterations encountered divergences of the Hamiltonian from the its initial value. -->
+
+[^3]: STAN also allows step-size jitter, which means "jittered" randomly during
+      sampling to avoid poor interactions. Default is 0, producing no jitter.
+
+[^4]: STAN supports _Euclidean HMC_. M could be configured by the user.
+	 
+### Bounded parameters transformation
+
+Besides auto-tuning the parameters in HMC (NUTS), STAN will transform the
+bounded variables to an unconstrained ones in the backend. 
+
+The basis idea is to set a one-to-one transformation $y = f(x)$:
+$$ p_Y(y) = p_X(f^{-1}(y)) |det J_{f^{-1}}(y)| $$
+
+### Transformations: examples
+
+* $y = \log(x - a)$ if $x$ has lower bound $a$.
+* $y = logit(x) = \log \frac{x}{1-x}$ if $x \in (0, 1)$.
+* $y = logit(\frac{x-a}{b -a})$ if $x \in (a, b)$.
+* If $x$ is ordered, then $y_k = \log (x_k - x_{k-1})$.
+* If $x_k >0, \sum_{k}^{K}x_k = 1$, then $y_k = logit(z_k) - log(\frac{1}{K-k});
+  z_k = \frac{x_k}{1 - \sum_{s=1}^{k-1}x_s}, z \in \mathcal{R}^{K-1}$.
+* When $x$ is a correlation matrix, find the upper triangular $w$ such that $x =
+  w w^{T}$, which can be done Cholesky decomposion. Then an inverted
+  transformation is designed on $w$ [See chapter 10 in STAN Referenc Manual for details].
+
+### STAN Math Library
+* STAN owns a mathematical library [@carpenter2015stan] that can automatically get the gradients.
+
+# RUN STAN
+
 ### How to use STAN?
 
 * Firstly, we need to write the STAN script ended with .stan to describe the
@@ -156,6 +246,8 @@ bayesplot_grid(
   xlim = c(0,1))
 ```
 
+# Materials and Summary
+
 ### STAN Materials
 
 * [STAN Functions](https://mc-stan.org/docs/2_24/functions-reference/)
@@ -168,9 +260,27 @@ bayesplot_grid(
   - After the introduction, you could read this document smoothly.
   - Lots of examples cover different statistical modelings.
   - It could be a good material to learn statistical models.
+  
+
+### Summary
+* STAN is designed as a statistical programming language. 
+  - Rich of elements, such as matrix operations, probabilistic functions.
+  - The clear structures of the blocks for describing a model.
+  - Efficiency: C++ backend, multi-thread support, GPU support and map-reduce support.
+  
+* STAN provides a general and solid inference framework.
+  - Uses _NUTS_ and _HMC_ for sampling.
+  - Uses _ADVI_  for variational inference.
+  - Use _L-BFGS_ for optimization, such as MLE estimation.
+  
+* STAN has lots of APIs in both R and Python. For R,
+  - _cmdstanr_,  _cmdstan_ for compiling and run the latest STAN.
+  - _bayesplot_, _posterior_ for analyzing and visualizing the results.
+  - _rstan_ as a united interface but not support the latest STAN.
+  - _brms_ and _rstanamrs_ simplify the process of writing STAN scripts.
 
 ### Thanks! 
 
 * You can find this presentation at https://github.com/beyondpie/intro_to_stan.
 
-* Any suggesions or Pull Requests are welcome.
+* Any suggestions or Pull Requests are welcome.
