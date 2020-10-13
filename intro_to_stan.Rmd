@@ -1,9 +1,11 @@
 ---
-title: "Introduction to STAN: a probabilistic programming language"
+title: "Introduction to STAN"
+subtitle: "A probabilistic programming language"
 author: Songpeng Zu
 date: "`r format(Sys.time(), '%d %B %Y')`"
 bibliography: ref.bib
-urlcolor: darkred
+urlcolor: blue
+fontsize: 10pt
 output:
   # pdf_document:
     # keep_tex: true
@@ -22,30 +24,27 @@ output:
     latex_engine: xelatex
     template: "pandoc/mydefault.latex"
     slide_level: 3
-    # includes:
-      # in_header: "pandoc/preamble.tex"
+    includes:
+      in_header: "pandoc/preamble.tex"
 ---
 
 ```{r, setup, include=FALSE}
-knitr::opts_chunk$set(fig.width = 4, collapse = TRUE)
+knitr::opts_chunk$set(collapse = TRUE, comment = "")
 ```
 
 ### What is STAN [^1]
 [^1]: https://mc-stan.org
 
 * A _programming language_
-
    + the syntax much like C++
-   
-   + furthermore it's written in C++
-   
+   + it's written in C++
    + it's needed to compile and run
 
-* Specifically designed for the __statistical modeling__
-   + express the data
-   + express the parameters and their priors
-   + describe how the data are generated conditioned on the parameters
-   + inference the parameters based on the data
+* Specifically designed for the _statistical modeling_
+   + Vector, matrix, array and their operations
+   + A series of probabilistic functions
+   + A series of blocks to describe a statistical model.
+   + Support sampling, maximum likelihood estimation and variational inference. 
 
 ### How STAN works?
 
@@ -60,6 +59,14 @@ knitr::opts_chunk$set(fig.width = 4, collapse = TRUE)
 
 * Furthermore, any bounded parameters will be transformed into a non-bounded
   parameter space.
+  
+### How to use STAN?
+
+* Firstly, we need to write the STAN script ended with .stan to describe the
+  data we have, the parameters, and the joint distribution of the parameters and
+  the data.
+
+* Secondly, we need to compile and run the codes, and analyze the results.
 
 ### Show me an example
 Let's consider a simple example. 
@@ -114,7 +121,7 @@ bern_mcmc$summary("theta", "mean", "sd" , "rhat",
 ```
 ### Posterior draws {.allowframebreaks}
 
-```{r include=TRUE, results = "asis", collapse = TRUE}
+```{r include=TRUE, collapse = TRUE}
 draws <- bern_mcmc$draws()
 str(draws)
 ## use posterior::as_draws_df to transorm the results
@@ -162,4 +169,8 @@ bayesplot_grid(
   - Lots of examples cover different statistical modelings.
   - It could be a good material to learn statistical models.
 
+### Thanks! 
 
+* You can find this presentation at https://github.com/beyondpie/intro_to_stan.
+
+* Any suggesions or Pull Requests are welcome.

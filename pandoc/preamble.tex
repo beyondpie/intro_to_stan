@@ -1,32 +1,25 @@
+% Reference: https://rmarkdown.rstudio.com/articles_beamer.html
 \setbeamertemplate{navigation symbols}{}
-\setbeamertemplate{caption}[numbered]
-\setbeamertemplate{sections/subsections in toc}[square]
-\setbeamercolor{section number projected}{bg=darkred,fg=white}
+\setbeamertemplate{title page}[empty]
 
-\usepackage[english]{babel}
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{enumerate}
-\usepackage{amsmath}
-\usepackage{graphicx}
+\setbeamerfont{subtitle}{size=\small}
 
-\usepackage[sort, numbers]{natbib}
-\bibliographystyle{unsrt}
+\setbeamercovered{transparent}
 
-\usepackage{tikz}
-\usetikzlibrary{bayesnet}
-\usepackage{amsthm}
-\usepackage{amssymb}
-\usepackage{amsfonts}
-\tikzset{>=latex}
-\usepackage{bm}
-
-\def\mywarn#1{\textcolor{red}{#1}}
-\def\myemph#1{\textcolor{blue}{#1}}
-\def\mycell#1{\textcolor{brown}{#1}}
-
-\AtBeginSubsection[] {
-  \begin{frame}<beamer>{Outline}
-    \tableofcontents[currentsection,currentsubsection]
-  \end{frame}
-}
+\definecolor{clemsonpurple}{HTML}{522D80}
+\definecolor{clemsonorange}{HTML}{F66733}
+\setbeamercolor{frametitle}{fg=clemsonpurple,bg=white}
+\setbeamercolor{title}{fg=clemsonpurple,bg=white}
+\setbeamercolor{local structure}{fg=clemsonpurple}
+\setbeamercolor{section in toc}{fg=clemsonpurple,bg=white}
+% \setbeamercolor{subsection in toc}{fg=clemsonorange,bg=white}
+\setbeamercolor{item projected}{fg=clemsonpurple,bg=white}
+\setbeamertemplate{itemize item}{\color{clemsonpurple}$\bullet$}
+\setbeamertemplate{itemize subitem}{\color{clemsonpurple}\scriptsize{$\bullet$}}
+\AtBeginPart{}
+\AtBeginSection{}
+\AtBeginSubsection{}
+\AtBeginSubsubsection{}
+\setlength{\emergencystretch}{0em}
+% \setlength{\parskip}{0pt}
+\let\Tiny=\tiny
