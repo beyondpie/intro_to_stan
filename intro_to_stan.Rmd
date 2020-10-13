@@ -146,8 +146,25 @@ $$ p_Y(y) = p_X(f^{-1}(y)) |det J_{f^{-1}}(y)| $$
   transformation is designed on $w$ [See chapter 10 in STAN Referenc Manual for details].
 
 ### STAN Math Library
-* STAN owns a mathematical library [@carpenter2015stan] that can automatically get the gradients.
+* STAN owns a mathematical library [@carpenter2015stan] named STAN Math Library
+  that can automatically get the gradients (not the numerical approximation) and
+  support matrix operations ,linear 
+  algebra, most common probability functions and so on.
+  
+* It's a C++, reverse-mode automatic differentiation library. Not limited to
+  STAN, and designed to be extensive, efficient, scalable and so on.
 
+### Reverse-Mode Automatic Differentiation: an example
+
+$f(y, \mu, \sigma) = -\frac{1}{2} (\frac{y-\mu}{\sigma})^2 - \log \sigma -
+\frac{1}{2} \log 2 \pi$
+
+```{r pressure, echo=FALSE, fig.cap="Expression graph of the normal log densityfunction (carpenter2015stan)", out.width = '60%'}
+knitr::include_graphics("figures/autodiff.png")
+```
+<!-- ![Expression graph of the normal log density function [@carpenter2015stan]](figures/autodiff.png) -->
+
+  
 # RUN STAN
 
 ### How to use STAN?
