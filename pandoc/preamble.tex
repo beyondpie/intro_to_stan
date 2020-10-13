@@ -1,0 +1,32 @@
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{sections/subsections in toc}[square]
+\setbeamercolor{section number projected}{bg=darkred,fg=white}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{enumerate}
+\usepackage{amsmath}
+\usepackage{graphicx}
+
+\usepackage[sort, numbers]{natbib}
+\bibliographystyle{unsrt}
+
+\usepackage{tikz}
+\usetikzlibrary{bayesnet}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\tikzset{>=latex}
+\usepackage{bm}
+
+\def\mywarn#1{\textcolor{red}{#1}}
+\def\myemph#1{\textcolor{blue}{#1}}
+\def\mycell#1{\textcolor{brown}{#1}}
+
+\AtBeginSubsection[] {
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}

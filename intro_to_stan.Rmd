@@ -2,10 +2,14 @@
 title: "Introduction to STAN: a probabilistic programming language"
 author: Songpeng Zu
 date: "`r format(Sys.time(), '%d %B %Y')`"
+bibliography: ref.bib
 output:
   # pdf_document:
     # keep_tex: true
   beamer_presentation:
+    # theme: "CambridgeUS"
+    colortheme: "beaver"
+    fonttheme: "professionalfonts"
     keep_tex: true
     # incremental: true
     fig_width: 7
@@ -15,11 +19,10 @@ output:
     highlight: tango
     citation_package: natbib
     latex_engine: xelatex
-    fonttheme: "professionalfonts"
     template: "pandoc/mydefault.latex"
     slide_level: 3
     # includes:
-      # in_header: preamble.tex
+      # in_header: "pandoc/preamble.tex"
 ---
 
 ```{r echo = FALSE}
@@ -31,23 +34,30 @@ knitr::opts_knit$set(progress = TRUE, verbose = FALSE)
 [^1]: https://mc-stan.org
 
 * A _programming language_
-   - the syntax much like C++
-   - furthermore it's written in C++
-   - it's needed to compile and run
+
+   + the syntax much like C++
+   
+   + furthermore it's written in C++
+   
+   + it's needed to compile and run
 
 * Specifically designed for the __statistical modeling__
-   - express the data
-   - express the parameters and their priors
-   - describe how the data are generated conditioned on the parameters
-   - inference the parameters based on the data
+   + express the data
+   + express the parameters and their priors
+   + describe how the data are generated conditioned on the parameters
+   + inference the parameters based on the data
 
 ### How STAN works?
 
 * _Hamilton Monte Carlo (HMC)_ provides a general sampling procedure for Bayesian inference.
+
   - As long as we can get the __gradients__ for the parameters.
+  
 * _Viariational Inference (VI)_ and _Maximum likelihood Estimation (MLE)_
   depend on both the __gradients__ and __optimizer__. 
-* STAN owns a mathematical library that can automatically get the gradients.
+  
+* STAN owns a mathematical library [See @carpenter2015stan] that can automatically get the gradients.
+
 * Furthermore, any bounded parameters will be transformed into a non-bounded
   parameter space.
 
@@ -83,7 +93,7 @@ bern_mod <- cmdstan_model("bernoulli.stan",
 bern_mod$print()
 ```
 
-### Let's feed it some data
+### Let's feed it some data {.allowframebreaks}
 
 ```{r include = TRUE}
 bern_data  <- list(N = 10, y = c(0,1,0,0,0,0,0,0,0,1))
@@ -102,7 +112,7 @@ bern_mcmc <- bern_mod$sample(data = bern_data,
 bern_mcmc$summary("theta", "mean", "sd" , "rhat",
                   "ess_bulk")
 ```
-### Posterior draws
+### Posterior draws {.allowframebreaks}
 
 ```{r include=TRUE}
 draws <- bern_mcmc$draws()
@@ -139,8 +149,8 @@ bayesplot_grid(
   xlim = c(0,1))
 ```
 
----
-```{r, echo = FALSE}
+### {.allowframebreaks}
+
 ```{r echo = FALSE}
 bayesplot_grid(
   mcmc_hist(bern_mcmc$draws("theta"), bindwidth = 0.05) +
@@ -152,3 +162,5 @@ bayesplot_grid(
 ```
 
 ### Discussions
+
+### References {.allowframebreaks}
