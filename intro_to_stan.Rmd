@@ -3,6 +3,7 @@ title: "Introduction to STAN: a probabilistic programming language"
 author: Songpeng Zu
 date: "`r format(Sys.time(), '%d %B %Y')`"
 bibliography: ref.bib
+urlcolor: darkred
 output:
   # pdf_document:
     # keep_tex: true
@@ -25,9 +26,8 @@ output:
       # in_header: "pandoc/preamble.tex"
 ---
 
-```{r echo = FALSE}
-options(warn = -1)
-knitr::opts_knit$set(progress = TRUE, verbose = FALSE)
+```{r, setup, include=FALSE}
+knitr::opts_chunk$set(fig.width = 4, collapse = TRUE)
 ```
 
 ### What is STAN [^1]
@@ -49,12 +49,12 @@ knitr::opts_knit$set(progress = TRUE, verbose = FALSE)
 
 ### How STAN works?
 
-* _Hamilton Monte Carlo (HMC)_ provides a general sampling procedure for Bayesian inference.
+* _Hamilton Monte Carlo (HMC)_ provides a general sampling procedure for Bayesian inference
 
-  - As long as we can get the __gradients__ for the parameters.
+  > _Gradient_ of the log probabilistic density function over the random variables are needed.
   
-* _Viariational Inference (VI)_ and _Maximum likelihood Estimation (MLE)_
-  depend on both the __gradients__ and __optimizer__. 
+<!-- * _Viariational Inference (VI)_ and _Maximum likelihood Estimation (MLE)_ -->
+  <!-- depend on both the __gradients__ and __optimizer__.  -->
   
 * STAN owns a mathematical library [See @carpenter2015stan] that can automatically get the gradients.
 
@@ -95,7 +95,7 @@ bern_mod$print()
 
 ### Let's feed it some data {.allowframebreaks}
 
-```{r include = TRUE}
+```{r include = TRUE, results = 'hide'}
 bern_data  <- list(N = 10, y = c(0,1,0,0,0,0,0,0,0,1))
 ## Run MCMC using the 'sample' method
 bern_mcmc <- bern_mod$sample(data = bern_data,
@@ -114,7 +114,7 @@ bern_mcmc$summary("theta", "mean", "sd" , "rhat",
 ```
 ### Posterior draws {.allowframebreaks}
 
-```{r include=TRUE}
+```{r include=TRUE, results = "asis", collapse = TRUE}
 draws <- bern_mcmc$draws()
 str(draws)
 ## use posterior::as_draws_df to transorm the results
@@ -123,7 +123,7 @@ str(draws)
 
 ### How about variational inference?
 
-```{r include = TRUE}
+```{r include = TRUE, results = 'hide'}
 bern_vb <- bern_mod$variational(data = bern_data,
                                   seed = 355113,
                                   output_samples = 4000)
@@ -131,7 +131,7 @@ bern_vb <- bern_mod$variational(data = bern_data,
 
 ### How about MLE estimation?
 
-```{r include = TRUE}
+```{r include = TRUE, results = 'hide'}
 bern_mle <- bern_mod$optimize(data = bern_data,
                               seed = 355113)
 
@@ -139,28 +139,27 @@ bern_mle <- bern_mod$optimize(data = bern_data,
 
 ### Result Summary
 
-```{r eval = FALSE}
+```{r echo = TRUE, results = 'hide', fig.height = 3, warning = FALSE, message = FALSE}
 bayesplot_grid(
-  mcmc_hist(bern_mcmc$draws("theta"), bindwidth = 0.05) +
+  mcmc_hist(bern_mcmc$draws("theta"), binwidth = 0.02) +
   vline_at(bern_mle$mle(), size = 1.2),
-  mcmc_hist(bern_vb$draws("theta"), bindwidth = 0.05,
-            bins = 30),
+  mcmc_hist(bern_vb$draws("theta"), binwidth = 0.02) +
+  vline_at(bern_mle$mle(), size = 1.2),
   titles = c("MCMC", "VI"),
   xlim = c(0,1))
 ```
 
-### {.allowframebreaks}
+### STAN Materials
 
-```{r echo = FALSE}
-bayesplot_grid(
-  mcmc_hist(bern_mcmc$draws("theta"), bindwidth = 0.05) +
-  vline_at(bern_mle$mle(), size = 1.2),
-  mcmc_hist(bern_vb$draws("theta"), bindwidth = 0.05,
-            bins = 30),
-  titles = c("MCMC", "VI"),
-  xlim = c(0,1))
-```
+* [STAN Functions](https://mc-stan.org/docs/2_24/functions-reference/)
+  - Use this as the reference materials. When you want some functions, just search it.
+  
+* [The STAN Language Sytanx](https://mc-stan.org/docs/2_24/reference-manual/index.html)
+  - You can scan this if you want to know the whole picture of STAN syntax.
+  
+* [The User Guide](https://mc-stan.org/docs/2_24/stan-users-guide/index.html)
+  - After the introduction, you could read this document smoothly.
+  - Lots of examples cover different statistical modelings.
+  - It could be a good material to learn statistical models.
 
-### Discussions
 
-### References {.allowframebreaks}
