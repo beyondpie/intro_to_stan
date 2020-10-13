@@ -10,7 +10,7 @@ output:
   # pdf_document:
     # keep_tex: true
   beamer_presentation:
-    # theme: "CambridgeUS"
+    theme: "CambridgeUS"
     colortheme: "beaver"
     fonttheme: "professionalfonts"
     keep_tex: true
@@ -24,6 +24,7 @@ output:
     latex_engine: xelatex
     template: "pandoc/mydefault.latex"
     slide_level: 3
+    # toc: true
     includes:
       in_header: "pandoc/preamble.tex"
 ---
@@ -167,13 +168,22 @@ knitr::include_graphics("figures/autodiff.png")
   
 # RUN STAN
 
-### How to use STAN?
+### How to use STAN with R?
+STAN development team provides [lots of choices](https://github.com/stan-dev)
+for R users.
 
-* Firstly, we need to write the STAN script ended with .stan to describe the
-  data we have, the parameters, and the joint distribution of the parameters and
-  the data.
+* __RStan__: the R interface to STAN. 
+  - One can fit the model in R and access the output. It relies on Rcpp to call
+    C++ code, and hard to keep updates with the newest STAN.
+* __CmdStan__: command-line / shell interface.
+  - One can control the compiling easily, e.g., add multi-thread support and GPU
+    support. It directly uses the latest STAN, but not flexible.
+* __CmdStanR__: a lightweight interface to CmdStan. You can control CmdStan without leaving R.
+* __brms__[@burkner2016brms]: will make the STAN script for you and pass it to __RStan__.
+* [rstanarm](https://mc-stan.org/rstanarm/articles/rstanarm.html)
+  - Bayesian applied regression modeling (arm) via rstan. You can use the
+    customary R modeling sytax, like _glm_ with a _formula_ and _data.frame_.
 
-* Secondly, we need to compile and run the codes, and analyze the results.
 
 ### Show me an example
 Let's consider a simple example. 
