@@ -47,7 +47,7 @@ modeling.
 
 * How to run it and analyze the result.
 
-# The big picture
+# Introduction
 
 ### What is STAN [^2]
 [^2]: https://mc-stan.org
@@ -64,27 +64,15 @@ modeling.
    + A series of blocks to describe a statistical model.
    + Support sampling, maximum likelihood estimation and variational inference. 
    
-### STAN script
-```{stan, output.var = "nouse", eval = FALSE}
-// A typical stan script is composed by several modules/blocks.
+### A typical STAN script: modules
+```{r eval = FALSE}
 functions {}
-data {
-  int N;
-  real y[N];
-  real<lower=0> sigma_y
-}
+data {}
 transformed data {}
-parameters {real mu;}
+parameters {}
 transformed parameters {}
-model {
-  mu ~ normal(0.0, 1.0);
-  for (n in 1:N) { y[n] ~ normal(mu, sigma_y);}
-}
-generated quantities {
-  // unused in the model
-  // generate replicated data or monitor convergence
-  real square_mu;
-  square_mu = mu * mu; }
+model {}
+generated quantities {}
 ```
 
 # Behind STAN
