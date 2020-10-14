@@ -184,9 +184,7 @@ for R users.
   - Bayesian applied regression modeling (arm) via rstan. You can use the
     customary R modeling sytax, like _glm_ with a _formula_ and _data.frame_.
 
-
-### Show me an example
-Let's consider a simple example. 
+### Let's consider a simple example. 
 
 * Suppose we have $N$ binary observations $y_{1},
 y_{2}, \ldots, y_{N}$. They are the _i.i.d_ samples from a $Bernoulli$
@@ -217,7 +215,7 @@ bern_mod <- cmdstan_model("bernoulli.stan",
 bern_mod$print()
 ```
 
-### Let's feed it some data {.allowframebreaks}
+### Let's feed it some data
 
 ```{r include = TRUE, results = 'hide'}
 bern_data  <- list(N = 10, y = c(0,1,0,0,0,0,0,0,0,1))
@@ -229,14 +227,7 @@ bern_mcmc <- bern_mod$sample(data = bern_data,
                              show_message = FALSE)
 ```
 
-### Summary of the sampling in STAN
-
-```{r include=TRUE}
-## use `posterior` package
-bern_mcmc$summary("theta", "mean", "sd" , "rhat",
-                  "ess_bulk")
-```
-### Posterior draws {.allowframebreaks}
+### Posterior draws
 
 ```{r include=TRUE, collapse = TRUE}
 draws <- bern_mcmc$draws()
@@ -244,21 +235,73 @@ str(draws)
 ## use posterior::as_draws_df to transorm the results
 ## into data.frame.
 ```
+### Posterior draws
+```{r include=TRUE, collapse = TRUE, fig.height = 3}
+color_scheme_set("mix-blue-red")
+bayesplot::mcmc_combo(draws,
+                      pars = c("theta"), widths = c(1,3),
+                      combo = c("dens_overlay", "trace"),
+                       gg_theme = legend_none())
+```
 
-### How about variational inference?
+### Posterior draws
+```{r include=TRUE, collapse = TRUE, fig.height = 3}
+bayesplot::mcmc_acf(posterior::as_draws_df(draws), 
+                      pars = "theta")
+```
+
+### Posterior Analysis
+* $\hat{R}$ statistic
+  - An MCMC sample consists of a set of sequence of $M$ (default is 4 in STAN)
+Markov samples, each consisting of an ordered sequence of $N$ draws from the posterior.
+   - The $\hat{R}$ [@gelman1992inference] statistic measures the ratio of the average variance of samples
+within each chain to the variance of the pooled samples across chains. Each chain is split into two halves before STAN calculates $\hat{R}$.
+   - If all chains are at equilibrium, $\hat{R}$ will be one. In practice, STAN
+suggests $\hat{R}$ should be below 1.1. 
+* Effective sample size(ESS)
+  - $N_{eff}$ is defined in terms of the autocorrelations within the sequence at
+    different lags, $N_{eff} = \frac{N}{1 + 2\sum_t \rho_t}$. 
+  - STAN estimates $N_{eff}$ with the autocorrelations (using FFT[@Geyer:2011])
+    and $\hat{R}$ based on multiple chains.
+* MCMC Standard Error: $\hat{\sigma_n}/\sqrt{N_{eff}}$.
+
+### STAN diagnosis{.allowframebreaks}
+```{r include=TRUE, eval = FALSE}
+## use `posterior` package
+bern_mcmc$cmdstan_diagnose()
+
+## Checking sampler transitions treedepth.
+## Treedepth satisfactory for all transitions.
+
+## Checking sampler transitions for divergences.
+## No divergent transitions found.
+
+## Checking E-BFMI - sampler transitions HMC potential energy.
+## E-BFMI satisfactory for all transitions.
+
+## Effective sample size satisfactory.
+
+## Split R-hat values satisfactory all parameters.
+## Processing complete, no problems detected.
+```
+
+### Summary of the sampling in STAN
+```{r include=TRUE}
+## use `posterior` package
+bern_mcmc$summary("theta", "mean", "sd" , "rhat",
+                  "ess_bulk")
+```
+
+### How about variational inference and MLE estimation
 
 ```{r include = TRUE, results = 'hide'}
 bern_vb <- bern_mod$variational(data = bern_data,
                                   seed = 355113,
                                   output_samples = 4000)
 ```
-
-### How about MLE estimation?
-
 ```{r include = TRUE, results = 'hide'}
 bern_mle <- bern_mod$optimize(data = bern_data,
                               seed = 355113)
-
 ```
 
 ### Result Summary
@@ -292,21 +335,17 @@ bayesplot_grid(
 ### Summary
 * STAN is designed as a statistical programming language. 
   - Rich of elements, such as matrix operations, probabilistic functions.
-  - The clear structures of the blocks for describing a model.
+  - The clear structures of the modules/blocks for describing a model.
   - Efficiency: C++ backend, multi-thread support, GPU support and map-reduce support.
   
 * STAN provides a general and solid inference framework.
   - Uses _NUTS_ and _HMC_ for sampling.
-  - Uses _ADVI_  for variational inference.
+  - Uses _ADVI_[@kucukelbir2017automatic]  for variational inference.
   - Use _L-BFGS_ for optimization, such as MLE estimation.
   
-* STAN has lots of APIs in both R and Python. For R,
-  - _cmdstanr_,  _cmdstan_ for compiling and run the latest STAN.
-  - _bayesplot_, _posterior_ for analyzing and visualizing the results.
-  - _rstan_ as a united interface but not support the latest STAN.
-  - _brms_ and _rstanamrs_ simplify the process of writing STAN scripts.
+* STAN has lots of APIs for R.
 
-### Thanks! 
+### Thanks!
 
 * You can find this presentation at https://github.com/beyondpie/intro_to_stan.
 
