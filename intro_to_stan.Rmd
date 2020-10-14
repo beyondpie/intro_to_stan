@@ -311,15 +311,17 @@ bayesplot_grid(
 * [STAN Functions](https://mc-stan.org/docs/2_24/functions-reference/)
   - Use this as the reference materials. When you want some functions, just search it.
   
-* [The STAN Language Sytanx](https://mc-stan.org/docs/2_24/reference-manual/index.html)
+* [STAN Reference Manual](https://mc-stan.org/docs/2_24/reference-manual/index.html)
   - You can scan this if you want to know the whole picture of STAN syntax.
   
-* [The User Guide](https://mc-stan.org/docs/2_24/stan-users-guide/index.html)
+* [STAN User Guide](https://mc-stan.org/docs/2_24/stan-users-guide/index.html)
   - After the introduction, you could read this document smoothly.
   - Lots of examples cover different statistical modelings.
   - It could be a good material to learn statistical models.
-  
 
+* [STAN discourse](https://discourse.mc-stan.org)
+  - Friendly and active!
+ 
 ### Summary
 * STAN is designed as a statistical programming language. 
   - Rich of elements, such as matrix operations, probabilistic functions.
@@ -332,6 +334,20 @@ bayesplot_grid(
   - Use _L-BFGS_ for optimization, such as MLE estimation.
   
 * STAN has lots of APIs for R.
+
+### Discussion
+
+* STAN does not support sampling discrete parameters. The Rao-Blackwellized
+estimators must be used: marginalizing out the discrete parameters [^5].
+
+* Modern neural network tools, like tensorflow, pytorch: they also support the
+  automatic differentiation, and what's more, they love GPU and eating different
+  kinds of data. So recently, [pyro](https://pyro.ai) and other tools are
+  developed for "deep" probabilistic programming.
+
+[^5]:
+    https://statmodeling.stat.columbia.edu/2020/01/29/rao-blackwellization-and-discrete-parameters-in-stan/
+
 
 ### Thanks!
 
