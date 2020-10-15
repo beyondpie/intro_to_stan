@@ -79,6 +79,9 @@ parameters {}
 ## optioanl
 transformed parameters {}
 ## critical module
+## STAN will make what you write here into
+## the log joint density function
+## may lack of the constant
 model {}
 ## optional
 generated quantities {}
