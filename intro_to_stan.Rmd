@@ -66,12 +66,19 @@ modeling.
    
 ### A typical STAN script: modules
 ```{r eval = FALSE}
+## optional
 functions {}
+## critical module
 data {}
+## optional
 transformed data {}
+## critical module
 parameters {}
+## optioanl
 transformed parameters {}
+## critical module
 model {}
+## optional
 generated quantities {}
 ```
 
