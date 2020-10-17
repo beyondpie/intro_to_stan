@@ -69,22 +69,22 @@ modeling.
 ### A typical STAN script: modules
 ```{r eval = FALSE}
 ## optional
-functions {}
+functions {} ## declarations and definitions
 ## critical module
-data {}
+data {}  ## declarations
 ## optional
-transformed data {}
+transformed data {} ## declarations, statements
 ## critical module
-parameters {}
+parameters {} ## declareations
 ## optioanl
-transformed parameters {}
+transformed parameters {} ## declarations, statements
 ## critical module
 ## STAN will make what you write here into
 ## the log joint density function
 ## may lack of the constant
-model {}
+model {} ## declarations, statements
 ## optional
-generated quantities {}
+generated quantities {} ## declarations, statements
 ```
 
 # Behind STAN
