@@ -40,3 +40,9 @@ vignettes/*.pdf
 /.DS_Store
 *.el
 .DS_Store
+*.csv
+/intro_to_stan-exported_files/
+/intro_to_stan_files/
+/intro_to_stan.tex
+/examples/camel/camel2
+/bernoulli
