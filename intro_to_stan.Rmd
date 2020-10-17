@@ -183,6 +183,12 @@ for R users.
 * [rstanarm](https://mc-stan.org/rstanarm/articles/rstanarm.html)
   - Bayesian applied regression modeling (arm) via rstan. You can use the
     customary R modeling sytax, like _glm_ with a _formula_ and _data.frame_.
+	
+### Dependencies
+
+* stan math lib <- stan <- rstan (pystan)
+* stan math lib <- stan <- rstan <- rstanarm
+* stan math lib <- stan <- cmdstan <- cmdstanr (cmdstanpy, matlabstan, ...)
 
 ### Let's consider a simple example. 
 
