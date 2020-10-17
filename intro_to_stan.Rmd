@@ -71,11 +71,11 @@ modeling.
 ## optional
 functions {} ## declarations and definitions
 ## critical module
-data {}  ## declarations
+data {}  ## declarations, NO STATEMENTS, READ FROM EXTERNAL.
 ## optional
 transformed data {} ## declarations, statements
 ## critical module
-parameters {} ## declareations
+parameters {} ## declareations, NO STATEMENTS
 ## optioanl
 transformed parameters {} ## declarations, statements
 ## critical module
