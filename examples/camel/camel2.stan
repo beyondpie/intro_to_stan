@@ -34,6 +34,7 @@ transformed data {
   Y2[3] = -2.;
   Y2[4] = -2.;
 }
+
 parameters {
 	vector[2] mu;
   cov_matrix[2] Sigma;
@@ -41,16 +42,18 @@ parameters {
 
 model {
 	mu ~ normal(0, 10);
-	Sigma ~ inv_wishart(3, S);
+	// Sigma ~ inv_wishart(3, S);
   for (n in 1:4) Y[n] ~ multi_normal(mu, Sigma);
   Y1 ~ normal(mu[1], sqrt(Sigma[1, 1]));
   Y2 ~ normal(mu[2], sqrt(Sigma[2, 2]));
-	// target += -1.5 * log(determinant(Sigma));
+	// Use Jeffery's prior: p(Sigma) proportiol to |Sigma|^{-3/2}
+	target += -1.5 * log(determinant(Sigma));
 }
 
 generated quantities {
 	real<lower=-1,upper= 1> rho;
   rho = Sigma[1, 2] / sqrt(Sigma[1, 1] * Sigma[2, 2]);
+
 	real y2condy1[4];
 	real y1condy2[4];
 	real muy2condy1[4];

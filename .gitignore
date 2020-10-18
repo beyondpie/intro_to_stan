@@ -46,3 +46,4 @@ vignettes/*.pdf
 /intro_to_stan.tex
 /examples/camel/camel2
 /bernoulli
+/examples/discrete/normal_mixture_k_simu_data
