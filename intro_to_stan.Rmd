@@ -69,22 +69,22 @@ modeling.
 ### A typical STAN script: modules
 ```{r eval = FALSE}
 ## optional
-functions {}
+functions {} ## declarations and definitions
 ## critical module
-data {}
+data {}  ## declarations, NO STATEMENTS, READ FROM EXTERNAL.
 ## optional
-transformed data {}
+transformed data {} ## declarations, statements
 ## critical module
-parameters {}
+parameters {} ## declareations, NO STATEMENTS
 ## optioanl
-transformed parameters {}
+transformed parameters {} ## declarations, statements
 ## critical module
 ## STAN will make what you write here into
 ## the log joint density function
 ## may lack of the constant
-model {}
+model {} ## declarations, statements
 ## optional
-generated quantities {}
+generated quantities {} ## declarations, statements
 ```
 
 # Behind STAN
@@ -165,6 +165,20 @@ knitr::include_graphics("figures/autodiff.png")
 ```
 <!-- ![Expression graph of the normal log density function [@carpenter2015stan]](figures/autodiff.png) -->
 
+### Posterior Analysis
+* $\hat{R}$ statistic
+  - An MCMC sample consists of a set of sequence of $M$ (default is 4 in STAN)
+Markov samples, each consisting of an ordered sequence of $N$ draws from the posterior.
+   - The $\hat{R}$ [@gelman1992inference] statistic measures the ratio of the average variance of samples
+within each chain to the variance of the pooled samples across chains. Each chain is split into two halves before STAN calculates $\hat{R}$.
+   - If all chains are at equilibrium, $\hat{R}$ will be one. In practice, STAN
+suggests $\hat{R}$ should be below 1.1. 
+* Effective sample size(ESS)
+  - $N_{eff}$ is defined in terms of the autocorrelations within the sequence at
+    different lags, $N_{eff} = \frac{N}{1 + 2\sum_t \rho_t}$. 
+  - STAN estimates $N_{eff}$ with the autocorrelations (using FFT[@Geyer:2011])
+    and $\hat{R}$ based on multiple chains.
+* MCMC Standard Error: $\hat{\sigma_n}/\sqrt{N_{eff}}$.
   
 # RUN STAN
 
@@ -183,6 +197,12 @@ for R users.
 * [rstanarm](https://mc-stan.org/rstanarm/articles/rstanarm.html)
   - Bayesian applied regression modeling (arm) via rstan. You can use the
     customary R modeling sytax, like _glm_ with a _formula_ and _data.frame_.
+	
+### Dependencies
+
+* stan math lib <- stan <- rstan (pystan)
+* stan math lib <- stan <- rstan <- rstanarm
+* stan math lib <- stan <- cmdstan <- cmdstanr (cmdstanpy, matlabstan, ...)
 
 ### Let's consider a simple example. 
 
@@ -250,21 +270,6 @@ bayesplot::mcmc_combo(draws,
 bayesplot::mcmc_acf(posterior::as_draws_df(draws), 
                       pars = "theta")
 ```
-
-### Posterior Analysis
-* $\hat{R}$ statistic
-  - An MCMC sample consists of a set of sequence of $M$ (default is 4 in STAN)
-Markov samples, each consisting of an ordered sequence of $N$ draws from the posterior.
-   - The $\hat{R}$ [@gelman1992inference] statistic measures the ratio of the average variance of samples
-within each chain to the variance of the pooled samples across chains. Each chain is split into two halves before STAN calculates $\hat{R}$.
-   - If all chains are at equilibrium, $\hat{R}$ will be one. In practice, STAN
-suggests $\hat{R}$ should be below 1.1. 
-* Effective sample size(ESS)
-  - $N_{eff}$ is defined in terms of the autocorrelations within the sequence at
-    different lags, $N_{eff} = \frac{N}{1 + 2\sum_t \rho_t}$. 
-  - STAN estimates $N_{eff}$ with the autocorrelations (using FFT[@Geyer:2011])
-    and $\hat{R}$ based on multiple chains.
-* MCMC Standard Error: $\hat{\sigma_n}/\sqrt{N_{eff}}$.
 
 ### STAN diagnosis{.allowframebreaks}
 ```{r include=TRUE, eval = FALSE}
