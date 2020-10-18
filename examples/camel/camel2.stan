@@ -33,17 +33,21 @@ transformed data {
   Y2[2] = 2.;
   Y2[3] = -2.;
   Y2[4] = -2.;
+	vector[2] mu = rep_vector(0.0, 2);
 }
 
+
 parameters {
-	vector[2] mu;
+	// vector[2] mu;
   cov_matrix[2] Sigma;
 }
 
 model {
-	mu ~ normal(0, 10);
+	// mu ~ normal(0, 10);
 	// Sigma ~ inv_wishart(3, S);
-  for (n in 1:4) Y[n] ~ multi_normal(mu, Sigma);
+  for (n in 1:4) {
+		Y[n] ~ multi_normal(mu, Sigma);
+	}
   Y1 ~ normal(mu[1], sqrt(Sigma[1, 1]));
   Y2 ~ normal(mu[2], sqrt(Sigma[2, 2]));
 	// Use Jeffery's prior: p(Sigma) proportiol to |Sigma|^{-3/2}
@@ -58,11 +62,13 @@ generated quantities {
 	real y1condy2[4];
 	real muy2condy1[4];
 	real muy1condy2[4];
+
 	for (i in 1:4) {
 		muy2condy1[i] = mu[2] + sqrt(Sigma[2,2]) * rho * (Y1[i] - mu[1])/sqrt(Sigma[1,1]);
 		y2condy1[i] = normal_rng(muy2condy1[i],
 												 sqrt((1-rho*rho) * Sigma[2,2]));
 	}
+
 	for (i in 1:4) {
 		muy1condy2[i] = mu[1] + sqrt(Sigma[1, 1]) * rho * (Y2[i]- mu[2]) / sqrt(Sigma[2,2]);
 		y1condy2[i] = normal_rng(muy1condy2[i],

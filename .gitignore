@@ -47,3 +47,4 @@ vignettes/*.pdf
 /examples/camel/camel2
 /bernoulli
 /examples/discrete/normal_mixture_k_simu_data
+/examples/stan_examples_files/
