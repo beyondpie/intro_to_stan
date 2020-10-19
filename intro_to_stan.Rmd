@@ -131,8 +131,13 @@ used in STAN. NUTS is the default one.
 Besides auto-tuning the parameters in HMC (NUTS), STAN will transform the
 bounded variables to an unconstrained ones in the backend. 
 
-The basis idea is to set a one-to-one transformation $y = f(x)$:
+The basis idea is to set a one-to-one change of variable[^6] $y = f(x)$:
 $$ p_Y(y) = p_X(f^{-1}(y)) |det J_{f^{-1}}(y)| $$
+
+[^6]: Important! You can use change of variable, and declare the distribution on the
+transformed parameter by yourself. But this needs you to manually add the extra log of
+$|det J|$. The details are in this
+[link](https://mc-stan.org/docs/2_24/stan-users-guide/changes-of-variables.html). 
 
 ### Transformations: examples
 
