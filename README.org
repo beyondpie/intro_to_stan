@@ -1,6 +1,0 @@
-* Introduction to STAN
-
-** how to reproduce the example in R?
-	- Install packages `cmdstanr`, `bayesplot`, `posterior` in R.
-	- Install `cmdstan` by using `cmdstanr` in R : `install_cmdstan(cores = 2)`.
-	- Then you can run the blocks in the intro_to_stan.Rmd file.
