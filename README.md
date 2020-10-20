@@ -38,9 +38,11 @@ warnings. We can treat this as a feature in STAN, which could help us to debug
 not only our codes, but also our model. Here I list some materials for
 reference. 
 
-### Explanations for STAN's Warnings
+### Explanations for STAN's Warnings and Divergences
 
 - [Brief Guide to Stan's Warnings](https://mc-stan.org/misc/warnings.html)
+
+- [Taming divergences in Stan Models](https://dev.to/martinmodrak/taming-divergences-in-stan-models-5762)
 
 ### Reparameterization in hierarchical Bayesian model.
 
