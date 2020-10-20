@@ -50,3 +50,4 @@ vignettes/*.pdf
 /examples/stan_examples_files/
 /examples/stan_examples_cache_old/
 /examples/mixture/normal_mixture_k_order
+/examples/mixture/normal_mixture_k_unorder
