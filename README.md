@@ -30,5 +30,5 @@ Examples are provided under the directory `examples`.
 - You can directly use the `stan_examples.Rmd` file to scan the examples.
 
 - You can enter the different directories under `examples` to run or modify both
-  the R and STAN script by yourself. 
+  the R and STAN scripts by yourself. 
 
