@@ -26,8 +26,9 @@ install.packages("posterior")
 ```
 ## Examples
 
-Examples are provided under the directory `examples`. You can directly use the
-`stan_examples.Rmd` file to scan the examples, or you can enter the different
-directories under `examples` to run the script, modify the STAN script by yourself.
+Examples are provided under the directory `examples`. 
+- You can directly use the `stan_examples.Rmd` file to scan the examples.
 
-## Diagnosis Materials
+- You can enter the different directories under `examples` to run or modify both
+  the R and STAN script by yourself. 
+
