@@ -55,3 +55,6 @@ reference.
 
 - [Identifying Bayesian Mixture Models](https://mc-stan.org/users/documentation/case-studies/identifying_mixture_models.html)
 
+### Visualization for diagnosis
+
+- [Visualization in Bayesian workflow](https://arxiv.org/abs/1709.01449)
