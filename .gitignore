@@ -48,3 +48,5 @@ vignettes/*.pdf
 /bernoulli
 /examples/discrete/normal_mixture_k_simu_data
 /examples/stan_examples_files/
+/examples/stan_examples_cache_old/
+/examples/mixture/normal_mixture_k_order

@@ -50,7 +50,13 @@ model {
 	}
   Y1 ~ normal(mu[1], sqrt(Sigma[1, 1]));
   Y2 ~ normal(mu[2], sqrt(Sigma[2, 2]));
-	// Use Jeffery's prior: p(Sigma) proportiol to |Sigma|^{-3/2}
+
+	// Use Jeffery's prior: p(Sigma) is proportional to |Sigma|^{-3/2}
+
+	// `target` is the conserved word in STAN.
+	// It adds all the log density function, and it (or you)
+	// can ignore the normalizing constants as long as the constants have no
+	// influence for getting the gradients.
 	target += -1.5 * log(determinant(Sigma));
 }
 
@@ -64,7 +70,9 @@ generated quantities {
 	real muy1condy2[4];
 
 	for (i in 1:4) {
+		// posterior mean
 		muy2condy1[i] = mu[2] + sqrt(Sigma[2,2]) * rho * (Y1[i] - mu[1])/sqrt(Sigma[1,1]);
+		// posterior sampling from a conditional normal distribution.
 		y2condy1[i] = normal_rng(muy2condy1[i],
 												 sqrt((1-rho*rho) * Sigma[2,2]));
 	}

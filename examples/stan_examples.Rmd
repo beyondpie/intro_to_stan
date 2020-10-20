@@ -31,14 +31,13 @@ library(posterior)
 ## for bayesplot plotting
 color_scheme_set("brewer-Spectral")
 
-## If you have cmdstan, let cmdstanr know it.
+## If you use cmdstanr install cmdstan, you can ignore this.
 set_cmdstan_path(path = paste(Sys.getenv("HOME"),
   "softwares",
   "cmdstan-2.23.0", sep = "/"))
 
 ## set the parameter for STAN sampling with multi-core support.
 options(mc.cores = 3)
-
 ```
 
 # Example 1: Multivariate normal with missing data
@@ -52,7 +51,7 @@ options(mc.cores = 3)
 \end{pmatrix}
   Each column corresponds to one sample, and $*$ are missing data.
   
-## How we infer $\Sigma$ using STAN
+## How we infer $\Sigma$ using STAN 
 
 * load the model
 ```{r cache = TRUE}
